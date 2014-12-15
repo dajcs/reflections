@@ -1,0 +1,225 @@
+git --version
+#git version 1.9.4.msysgit.2
+
+# Getting Colored Output
+git config --global color.ui auto
+
+git config --global user.name "Attila Nemet"
+git config --global user.email Attila.Nemet@gmail.com
+
+#alias for svn style commnands
+git config --global alias.st status
+git config --global alias.co checkout
+git config --global alias.br branch
+git config --global alias.up rebase
+git config --global alias.ci commit
+
+# Git Bash copy/paste
+# https://www.udacity.com/wiki/ud775/git-bash-copy-paste
+\Win Start Menu\Programs\Git\Git Bash\right click\Properties\Options\
+\check QuickEdit Mode
+
+git clone https://github.com/udacity/asteroids.git
+
+git help <command>
+git log --stat
+git diff <orig_id> <changed_id>
+git checkout <id>
+git checkout master
+
+# Entering commit IDs
+Enter the first four or more characters of the commit ID 
+rather than pasting the entire ID.
+
+
+# more setup
+https://www.udacity.com/course/viewer#!/c-ud775/l-2980038599/m-3341718587
+
+#completion
+https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash
+
+#prompt
+https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh
+
+#text editors
+#https://help.github.com/articles/associating-text-editors-with-git/
+git config --global core.editor "'/c/Inst/Ericsson/Notepad++/npp/notepad++.exe' -multiInst -notabbar -nosession -noPlugin"
+
+# add alias to .bash_profile
+alias np="/c/Inst/Ericsson/Notepad++/npp/notepad++.exe -multiInst -notabbar -nosession -noPlugin"
+
+#################################
+## tutorial:
+https://www.atlassian.com/git/tutorials/
+###############################################################
+
+# -> staging area
+# initiate version control
+git init
+git add
+#List which files are staged, unstaged, and untracked.
+git status
+# change between workdir and staging
+git diff
+# change between staging and repo
+git diff --staged
+# rewert changes in workdir and staging
+git reset --hard
+
+# staging -> repo
+git commit
+# staging -> repo (without opening external text editor)
+git commit -m "<message>"
+# all tracked changes in workdir -> repo
+git commit -a
+
+# git status on workdir/staging, git log on repo
+git log
+# show n commits
+git log -n <limit>
+# condenset view
+git log --oneline
+# list altered files and changes
+git log --stat
+# full change list
+git log -p
+# search for author
+git log --author="<pattern>"
+# search for commit message
+git log --grep="<pattern>"
+# display logs from..to
+# from..to can be commit ID, a branch name, HEAD,.. <revision reference>
+git log <since>..<until>
+# display history of a particular file
+git log <file>
+# graphic branch tree
+git log --graph --decorate --oneline
+
+# HEAD = current commit (branch or specific commit)
+# 3157e~1 = the commit before 3157e
+# HEAD~3 = the commit 3 commits before current HEAD
+
+# display all changes John Smith made to hello.py
+git log --author="John Smith" -p hello.py
+
+# display all commits in 'some-feature' branch that are not in 'master' branch
+git log --oneline master..some-feature
+
+# viewing old commits
+# checout -> checking out files/commits/branches
+
+# return to master branch ("current" state of the project)
+git checkout master
+
+# restore a <file> to an old state in <commit>
+git checkout <commit> <file>
+
+# restore work dir to old state in <commit>
+# HEAD detached state ->  (origin/master, origin/HEAD, master) labels gone
+git checkout <commit>
+
+# return to master branch ("current" state of the project)
+git checkout master
+
+# unstage file
+git checkout HEAD <file>
+
+# undo changes in work dir
+git checkout -- <file>
+
+
+# undoing changes
+# https://www.atlassian.com/git/tutorials/undoing-changes/git-revert
+# append a new commit by removing from current state all changes introduced <commit>  
+# (this is a safe operation, removes changes from 1 single <commit> and adds a new commit)
+git revert <commit>
+
+# remove <file> from staging, leave work dir unchanged
+git reset <file>
+
+# clear staging area
+git reset
+
+# clear staging area, adjust work dir to last commit
+# (obliterates all uncommitted changes)
+git reset --hard
+
+# move current branch tip back to <commit>, clear staging area, leave work dir unchanged
+git reset <commit>
+
+# clear staging area, adjust work dir to <commit>
+# (obliterates all uncommitted changes and all commits after <commit>)
+git reset --hard <commit>
+
+# reverting is designed to safely undo a public commit, git reset is designed to undo local changes
+# resetting completely removes a changeset, whereas reverting maintains the original changeset and uses a new commit to apply the undo
+# You should never use git reset <commit> when any snapshots after <commit> have been pushed to a public repository
+
+# git reset      example >>>>>>>>>>>>>>>>>>>>>>>
+
+# Edit both hello.py and main.py
+
+# Stage everything in the current directory
+git add .
+
+# Realize that the changes in hello.py and main.py
+# should be committed in different snapshots
+
+# Unstage main.py
+git reset main.py
+
+# Commit only hello.py
+git commit -m "Make some changes to hello.py"
+
+# Commit main.py in a separate snapshot
+git add main.py
+git commit -m "Edit main.py"
+
+# end of git reset example <<<<<<<<<<<<<<<<<<<<<<<<<
+
+
+# git reset --hard <commit>    example >>>>>>>>>>>>>>
+
+# Create a new file called `foo.py` and add some code to it
+
+# Commit it to the project history
+git add foo.py
+git commit -m "Start developing a crazy feature"
+
+# Edit `foo.py` again and change some other tracked files, too
+
+# Commit another snapshot
+git commit -a -m "Continue my crazy feature"
+
+# Decide to scrap the feature and remove the last 2 commits
+git reset --hard HEAD~2
+
+# end of git reset --hard <commit>    example <<<<<<<<<<<<<<<<<
+
+
+# remove untracked files from work dir, -n simulate, -f forced, -d directory, -x .gitignore files
+git clean
+
+
+# Combine the staged changes with the previous commit and replace the previous commit with the resulting snapshot.
+# Running this when there is nothing staged lets you edit the previous commit’s message without altering its snapshot.
+git commit --amend
+
+# amend example >>>>>>>>>>>>>>>>>>>
+
+# Edit hello.py and main.py
+git add hello.py
+git commit
+
+# Realize you forgot to add the changes from main.py
+git add main.py
+git commit --amend --no-edit
+
+# end of amend example <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+
+# Rebase the current branch onto <base>, which can be any kind of commit reference
+# <base>  -  an ID, a branch name, a tag, or a relative reference to HEAD
+git rebase <base>
+
+
