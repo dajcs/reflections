@@ -7,12 +7,20 @@ git config --global color.ui auto
 git config --global user.name "Attila Nemet"
 git config --global user.email Attila.Nemet@gmail.com
 
+# if too many untracked files => do not show
+git config --global status.showUntrackedFiles no
+
 #alias for svn style commnands
 git config --global alias.st status
 git config --global alias.co checkout
 git config --global alias.br branch
 git config --global alias.up rebase
 git config --global alias.ci commit
+
+# my alias
+git config --global alias.tree "log --graph --oneline --decorate"
+git config --global alias.ftree "log --graph --oneline --decorate --all"
+
 
 # Git Bash copy/paste
 # https://www.udacity.com/wiki/ud775/git-bash-copy-paste
@@ -45,7 +53,7 @@ https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.s
 #https://help.github.com/articles/associating-text-editors-with-git/
 git config --global core.editor "'/c/Inst/Ericsson/Notepad++/npp/notepad++.exe' -multiInst -notabbar -nosession -noPlugin"
 
-# add alias to .bash_profile
+# add notepad alias to .bash_profile
 alias np="/c/Inst/Ericsson/Notepad++/npp/notepad++.exe -multiInst -notabbar -nosession -noPlugin"
 
 #################################
@@ -222,4 +230,81 @@ git commit --amend --no-edit
 # <base>  -  an ID, a branch name, a tag, or a relative reference to HEAD
 git rebase <base>
 
+
+# git rebase   example >>>>>>>>>>>>>>>>>>>.
+
+# Start a new feature
+git checkout -b new-feature master
+# Edit files
+git commit -a -m "Start developing a feature"
+
+# In the middle of our feature, we realize there's a security hole in our project
+
+# Create a hotfix branch based off of master
+git checkout -b hotfix master
+# Edit files
+git commit -a -m "Fix security hole"
+# Merge back into master
+git checkout master
+git merge hotfix
+git branch -d hotfix
+
+# After merging the hotfix into master, we have a forked project history.
+# Instead of a plain git merge, we'll integrate the feature branch with a rebase to maintain a linear history:
+
+git checkout new-feature
+git rebase master
+
+#This moves new-feature to the tip of master, which lets us do a standard fast-forward merge from master:
+
+git checkout master
+git merge new-feature
+
+# end of git rebase example <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+
+
+# show changes in log history
+git reflog
+
+
+
+# branch - label given to commits
+# the commit on the tip of the branch is labelled with the branch name
+
+# create new branch <bname>
+git branch <bname>
+
+# list branch ( * active branch )
+git branch
+
+# switch to branch <bname> (<bname> should exist locally before, consecutive commits will be on this branch)
+git checkout <bname>
+# if <bname> doesn't exist locally, but exists remotely it will execute the equivalent command below
+git checkout -b <bname> --track <remote>/<bname>
+
+# show nice tree with <master> <bname1> <bname2> branches
+git log --graph --oneline --decorate <master> <bname1> <bname2>
+# show nice tree with all branches
+git log --graph --oneline --decorate --all
+# show nice gui tree with all branches
+gitk --all
+# - - - - - - - - - - - - - - - - - - - - -
+
+
+# go back to old <commit_id>  (and detached HEAD state)
+git checkout <commit_id>
+# when you create new commit in this state that would be lost, unless you retain by creating new branch <new_bname>
+git checkout -b <new_bname>
+
+
+# merge <bname> into master (*active branch should be master)
+git merge <master> <bname>
+# if conflict, check with git diff, fix by edit <file>, git add <file>, git commit
+# commits listed in git log command are not always in parent-child relationship,
+# to see changes introduced by <commit_id>
+git show <commit_id>
+
+# delete already merged <bname>
+git branch -d <bname>
 
