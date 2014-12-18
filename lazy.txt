@@ -4,8 +4,12 @@ git --version
 # Getting Colored Output
 git config --global color.ui auto
 
+# set name/email
 git config --global user.name "Attila Nemet"
 git config --global user.email Attila.Nemet@gmail.com
+
+# set github psw
+git config --global credential.helper wincred
 
 # if too many untracked files => do not show
 git config --global status.showUntrackedFiles no
@@ -24,19 +28,30 @@ git config --global alias.ftree "log --graph --oneline --decorate --all"
 
 # Git Bash copy/paste
 # https://www.udacity.com/wiki/ud775/git-bash-copy-paste
+
+# set Quick Edit mode for easy copy/paste
 \Win Start Menu\Programs\Git\Git Bash\right click\Properties\Options\
 \check QuickEdit Mode
 
+# clone from remote <url> to local repo (example: udacity/asteroids)
 git clone https://github.com/udacity/asteroids.git
 
 git help <command>
+
+# log statistics
 git log --stat
+
+# check changes between two <commit_id> -s
 git diff <orig_id> <changed_id>
-git checkout <id>
+
+# go back to <commit_id>
+git checkout <commit_id>
+
+# go to tip of master branch
 git checkout master
 
 # Entering commit IDs
-Enter the first four or more characters of the commit ID 
+Enter the first four or more characters of the commit ID
 rather than pasting the entire ID.
 
 
@@ -53,7 +68,7 @@ https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.s
 #https://help.github.com/articles/associating-text-editors-with-git/
 git config --global core.editor "'/c/Inst/Ericsson/Notepad++/npp/notepad++.exe' -multiInst -notabbar -nosession -noPlugin"
 
-# add notepad alias to .bash_profile
+# add notepad alias to .bash_profile (use the notepad++ without install)
 alias np="/c/Inst/Ericsson/Notepad++/npp/notepad++.exe -multiInst -notabbar -nosession -noPlugin"
 
 #################################
@@ -138,7 +153,7 @@ git checkout -- <file>
 
 # undoing changes
 # https://www.atlassian.com/git/tutorials/undoing-changes/git-revert
-# append a new commit by removing from current state all changes introduced <commit>  
+# append a new commit by removing from current state all changes introduced <commit>
 # (this is a safe operation, removes changes from 1 single <commit> and adds a new commit)
 git revert <commit>
 
@@ -307,4 +322,76 @@ git show <commit_id>
 
 # delete already merged <bname>
 git branch -d <bname>
+
+
+# create empty repository on github (udacity example: reflections)
+
+# check current remote-s
+git remote
+
+# add remote <origin> <url>  (when only one remote we call usually 'origin', copy/paste <url> from github - https or ssh)
+git remote add origin  https://github.com/dajcs/reflections.git
+
+# check remote url
+git remote -v
+
+# remove remote <rname>
+git remote rm <rname>
+
+# rename remote
+git remote rename <old-name> <new-name>
+
+# if remote has been modified, this can be downloaded to local repo (example: remote origin, branch master)
+git pull origin master
+
+
+
+# fetch all branches from remote repository <remote> (default: origin)
+# safe command, creates new 'remote' branches, is not interfering with your work
+git fetch <remote>
+
+# fetch specific branch <bname>
+git fetch <remote> <bname>
+
+# check new changes between your local master and remote master
+git log --oneline master..origin/master
+
+# prepare for merge
+git checkout master
+git log origin/master
+
+# do merge
+git merge origin/master
+
+# do merge on Udacity (master -> origin/master ?)
+git merge master origin/master
+
+
+git pull <remote> = git fetch <remote> + git merge origin/<current-branch>
+git pull --rebase <remote> = the same, but instead of merge use rebase
+
+
+# push <branch> to <remote> with all of the necessary commits and internal objects
+# To prevent you from overwriting commits, Git won't let you push when it results in a non-fast-forward merge in the destination repository
+git push <remote> <branch>
+git push origin master
+
+# push even if it's a non-fast-forward operation on <remote>.  Unsafe.
+git push <remote> --force
+# normal operation: if the remote history has diverged from your history,
+# you need to pull the remote branch and merge it into your local one, then try pushing again
+# The --force flag overrides this behavior and makes the remote repository's branch match your local one,
+# deleting any upstream changes that may have occurred since you last pulled.
+# The only time you should ever need to force push is when you realize that
+# the commits you just shared were not quite right and you fixed them with a
+# git commit --amend or an interactive rebase.
+# However, you must be absolutely certain that none of your teammates have
+# pulled those commits before using the --force option
+
+# push all branches
+git push <remote> --all
+
+# push local tags (not pushed by default)
+git push <remote> --tags
+
 
